@@ -1,0 +1,18 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span>SOCIAL WEBAPP</span>
+
+    <span>
+      <button mat-raised-button routerLink="/">Home</button>
+      <span [hidden]="isLogged()">
+        <button mat-raised-button routerLink="/login">Login</button>
+        <button mat-raised-button routerLink="/register">Register</button>
+      </span>
+      <span [hidden]="!isLogged()">
+        <button mat-raised-button routerLink="/counter">Counter</button>
+        <button mat-raised-button routerLink="/fetch-data">Fetch Data</button>
+        <button mat-raised-button (click)="logout()">Logout</button>
+      </span>
+    </span>
+  </mat-toolbar-row>
+</mat-toolbar>

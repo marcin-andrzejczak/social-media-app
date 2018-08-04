@@ -1,0 +1,22 @@
+<div class="example-container">
+
+  <mat-card>
+    <h2>Register</h2>
+    <form #registerForm="ngForm" (ngSubmit)="register(registerForm.value)" class="form-container">
+      <mat-form-field>
+        <input matInput placeholder="Name" [(ngModel)]="registerForm.firstname" #firstname name="firstname" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Surname" [(ngModel)]="registerForm.lastname" #lastname name="lastname" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Username" [(ngModel)]="registerForm.username" #username name="username" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Password" password [(ngModel)]="registerForm.password" #password name="password" required>
+      </mat-form-field>
+      <button mat-raised-button type="submit" [disabled]="!registerForm.form.valid">Register</button>
+    </form>
+  </mat-card>
+
+</div>

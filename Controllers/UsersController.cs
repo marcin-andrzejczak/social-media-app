@@ -74,14 +74,14 @@ namespace website.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("register")]
+        [HttpPost]
         public IActionResult Register([FromBody] UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
             try
             {
-                _userService.Create(user, userDto.Password);
-                return Ok();
+                var userResult = _mapper.Map<UserDto>(_userService.Create(user, userDto.Password));
+                return Ok(userResult);
             } catch (AppException ex)
             {
                 return BadRequest(new { message = ex.Message });
