@@ -11,7 +11,7 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router, @Inject('BASE_URL') private baseUrl: string) { }
 
   public login(form: LoginForm) {
-    this.http.post(this.baseUrl + 'api/users/authenticate', form).subscribe((result: any) => {
+    this.http.post(this.baseUrl + 'api/auth/login', form).subscribe((result: any) => {
       console.log(result);
       localStorage.setItem('auth_token', result.token);
       this.router.navigate(['/']);
@@ -23,7 +23,13 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
-  public isLogged() : boolean {
+  public isLogged(): boolean {
+    // TODO: Make auth check for status on endpoint rather than existence of auth_token key in local storage
+    //this.http.get(this.baseUrl + 'api/auth/status').subscribe( (result: any) => {
+    //  console.log(result);
+    //  debugger;
+    //  return true;
+    //});
     return !!localStorage.getItem('auth_token');
   }
 

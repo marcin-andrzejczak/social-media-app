@@ -15,8 +15,8 @@ export class NavMenuComponent {
     this.authService.logout();
   }
 
-  public isLogged() {
-    this.authService.isLogged();
+  public isLogged(): boolean {
+    return this.authService.isLogged();
   }
 
 }
