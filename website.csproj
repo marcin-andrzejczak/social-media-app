@@ -37,6 +37,7 @@
   <ItemGroup>
     <Folder Include="ClientApp\src\app\interceptors\" />
     <Folder Include="ClientApp\src\app\DTOs\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

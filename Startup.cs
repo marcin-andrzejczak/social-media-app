@@ -28,11 +28,10 @@ namespace website
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var dbConnection = "server=localhost;uid=vstudio;pwd=vstudio;database=website";
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddDbContext<DataContext>(x => x.UseMySql(dbConnection));
+            //services.AddDbContext<DataContext>(x => x.UseMySql(Configuration.GetConnectionString("MySqlConnection")));
             services.AddAutoMapper();
+            services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");

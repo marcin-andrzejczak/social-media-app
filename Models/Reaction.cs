@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace website.Models
+﻿namespace website.Models
 {
-    public class Class
+    public class Reaction
     {
+        public int UserID { get; set; }
+        public int EntryID { get; set; }
+        public ReactionType ReactionType { get; set; }
     }
 }
