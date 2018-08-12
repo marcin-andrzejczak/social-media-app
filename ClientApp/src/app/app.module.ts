@@ -9,23 +9,21 @@ import { MaterialModule } from './modules/material/material.module';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { HomeComponent } from './components/home/home.component';
-import { CounterComponent } from './components/counter/counter.component';
-import { FetchDataComponent } from './components/fetch-data/fetch-data.component';
 import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
 import { CustomHttpInterceptor } from './interceptors/custom-http-interceptor';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
-    FetchDataComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -35,10 +33,10 @@ import { RegisterComponent } from './components/register/register.component';
     FormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
       { path: 'login', component: LoginComponent },
-      { path: 'register', component: RegisterComponent}
+      { path: 'register', component: RegisterComponent },
+      { path: 'profile', component: ProfileComponent, pathMatch: 'full' },
+      { path: 'profile/:id', component: ProfileComponent },
     ])
   ],
   providers: [

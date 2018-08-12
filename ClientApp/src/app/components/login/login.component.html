@@ -4,7 +4,7 @@
     <h2>Login</h2>
     <form #loginForm="ngForm" (ngSubmit)="login(loginForm.value)" class="form-container">
       <mat-form-field>
-        <input matInput placeholder="Username" [(ngModel)]="loginForm.username" name="username">
+        <input matInput placeholder="Email" [(ngModel)]="loginForm.email" name="email">
       </mat-form-field>
       <mat-form-field>
         <input matInput placeholder="Password" password [(ngModel)]="loginForm.password" name="password">

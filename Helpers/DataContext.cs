@@ -1,13 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using website.Models;
 
 namespace website.Helpers
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<User> Accounts { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Reaction> Reactions { get; set; }
@@ -16,6 +18,9 @@ namespace website.Helpers
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+
             modelBuilder.Entity<User>().HasOne(u => u.ProfilePicture);
             modelBuilder.Entity<User>().HasMany(u => u.Medias).WithOne(m => m.User);
             modelBuilder.Entity<User>().HasMany(u => u.Posts).WithOne(p => p.User);

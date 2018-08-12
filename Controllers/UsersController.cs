@@ -40,13 +40,13 @@ namespace website.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Register([FromBody] UserDto userDto)
+        public async Task<IActionResult> Register([FromBody] UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
             try
             {
-                var userResult = _mapper.Map<UserDto>(_userService.Create(user, userDto.Password));
-                return Ok(userResult);
+                await _userService.Create(user, userDto.Password);
+                return Ok();
             } catch (AppException ex)
             {
                 return BadRequest(new { message = ex.Message });
@@ -62,7 +62,7 @@ namespace website.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public IActionResult GetById(string id)
         {
             var user = _userService.GetById(id);
             var userDto = _mapper.Map<UserDto>(user);
@@ -70,7 +70,7 @@ namespace website.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] UserDto userDto)
+        public IActionResult Update(string id, [FromBody] UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
             user.Id = id;

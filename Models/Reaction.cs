@@ -2,7 +2,7 @@
 {
     public class Reaction
     {
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         public int EntryID { get; set; }
         public ReactionType ReactionType { get; set; }
     }

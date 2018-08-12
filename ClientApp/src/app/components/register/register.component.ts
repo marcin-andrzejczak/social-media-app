@@ -22,9 +22,7 @@ export class RegisterComponent implements OnInit {
   public register(registerForm: RegisterForm) {
     console.log(registerForm.firstname + " " + registerForm.lastname );
     this.userService.create(registerForm).subscribe(result => {
-      if (result != null) {
         this.router.navigate(['/']);
-      }
     }, error => console.error(error));
   }
 

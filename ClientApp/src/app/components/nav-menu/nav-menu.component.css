@@ -1,3 +1,9 @@
+.profile-picture-icon {
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
+}
+
 /*.main-nav {
   position: fixed;
   left: 0;

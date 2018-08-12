@@ -13,14 +13,13 @@ export class UserService {
     return this.http.get(this.baseUrl + 'api/users');
   }
 
-  get(id: string) {
+  get(id: string): Observable<any> {
     return this.http.get(this.baseUrl + 'api/users/' + id);
   }
 
   create(user: any): Observable<any> {
-    var userres = this.http.post(this.baseUrl + 'api/users', user);
-    console.log(userres);
-    return userres;
+    return this.http.post(this.baseUrl + 'api/users', user);
+    
   }
 
   update(user: any): Observable<any> {
@@ -28,6 +27,6 @@ export class UserService {
   }
 
   remove(id: string) {
-    return this.http.delete(this.baseUrl + 'api/users/' + id);
+    this.http.delete(this.baseUrl + 'api/users/' + id);
   }
 }

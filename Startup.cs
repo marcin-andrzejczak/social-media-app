@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using website.Helpers;
 using website.Services;
 using AutoMapper;
+using website.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace website
 {
@@ -33,6 +35,10 @@ namespace website
             services.AddAutoMapper();
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<DataContext>()
+                .AddDefaultTokenProviders();
+
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
@@ -52,8 +58,7 @@ namespace website
                     OnTokenValidated = context =>
                     {
                         var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                        var userId = int.Parse(context.Principal.Identity.Name);
-                        var user = userService.GetById(userId);
+                        var user = userService.GetById(context.Principal.Identity.Name);
                         if (user == null)
                         {
                             context.Fail("Unauthorized");

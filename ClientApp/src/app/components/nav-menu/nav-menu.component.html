@@ -1,16 +1,16 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <span>SOCIAL WEBAPP</span>
-
+    <button mat-raised-button routerLink="/">Social WebApp</button>
     <span>
-      <button mat-raised-button routerLink="/">Home</button>
       <span [hidden]="isLogged()">
         <button mat-raised-button routerLink="/login">Login</button>
         <button mat-raised-button routerLink="/register">Register</button>
       </span>
       <span [hidden]="!isLogged()">
-        <button mat-raised-button routerLink="/counter">Counter</button>
-        <button mat-raised-button routerLink="/fetch-data">Fetch Data</button>
+        <button mat-raised-button routerLink="/profile">
+          <img class="profile-picture-icon" src="{{profilePicUrl}}"/>
+          {{firstName}} {{lastName}}
+        </button>
         <button mat-raised-button (click)="logout()">Logout</button>
       </span>
     </span>

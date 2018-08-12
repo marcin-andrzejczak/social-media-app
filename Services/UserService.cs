@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,153 +11,97 @@ namespace website.Services
 {
     public interface IUserService
     {
-        User Authenticate(string username, string password);
+        Task<User> Authenticate(string username, string password);
         IEnumerable<User> GetAll();
-        User GetById(int id);
-        User Create(User user, string password);
+        Task<User> GetById(string id);
+        Task<User> Create(User user, string password);
         void Update(User user, string password = null);
         void Delete(int id);
     }
 
     public class UserService : IUserService
     {
-        private DataContext _context;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly DataContext _dataContext;
 
-        public UserService(DataContext context)
+        public UserService(SignInManager<User> signInManager, UserManager<User> userManager, DataContext dataContext)
         {
-            _context = context;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _dataContext = dataContext;
         }
 
-        public User Authenticate(string username, string password)
+        public async Task<User> Authenticate(string email, string password)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
+            if( result.Succeeded )
             {
-                return null;
+                return _userManager.Users.SingleOrDefault(r => r.Email == email);
             }
-
-            var user = _context.Users.SingleOrDefault(x => x.Username == username);
-
-            if (user == null)
-            {
-                return null;
-            }
-
-            if(!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-            {
-                return null;
-            }
-
-            return user;
+            return null;
         }
 
-        public User Create(User user, string password)
+        public async Task<User> Create(User user, string password)
         {
-            if (string.IsNullOrWhiteSpace(password))
+            user.UserName = user.Email;
+            var result = await _userManager.CreateAsync(user, password);
+            if (result.Succeeded)
             {
-                throw new AppException("Password is required");
+                User u = await _userManager.FindByEmailAsync(user.Email);
+                await _signInManager.SignInAsync(user, false);
+                return _userManager.Users.SingleOrDefault(r => r.Email == user.Email);
             }
 
-            if (_context.Users.Any(x => x.Username == user.Username))
-            {
-                throw new AppException("Username \"" + user.Username + "\" is already taken");
-            }
-
-            byte[] passwordHash, passwordSalt;
-            CreatePasswordHash(password, out passwordHash, out passwordSalt);
-
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-
-            _context.Users.Add(user);
-            _context.SaveChanges();
-
-            return user;
+            return null;
         }
 
-        public void Delete(int id)
+        public async void Delete(int id)
         {
-            var user = _context.Users.Find(id);
+            var user = _dataContext.Accounts.Find(id);
             if(user != null)
             {
-                _context.Users.Remove(user);
-                _context.SaveChanges();
+                await _userManager.DeleteAsync(user);
             }
         }
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users;
+            return _dataContext.Accounts;
         }
 
-        public User GetById(int id)
+        public async Task<User> GetById(string id)
         {
-            return _context.Users.Find(id);
+            return await _userManager.FindByIdAsync(id);
         }
 
-        public void Update(User userParam, string password = null)
+        public async void Update(User userParam, string password = null)
         {
-            var user = _context.Users.Find(userParam.Id);
+            var user = _dataContext.Accounts.Find(userParam.Id);
 
             if(user == null)
             {
                 throw new AppException("User not found");
             }
 
-            if(userParam.Username != user.Username)
+            if(userParam.UserName != user.UserName)
             {
-                if(_context.Users.Any(x => x.Username == userParam.Username))
+                if(_dataContext.Accounts.Any(x => x.UserName== userParam.UserName))
                 {
-                    throw new AppException("Username " + userParam.Username + " is already taken");
+                    throw new AppException("Username " + userParam.UserName + " is already taken");
                 }
             }
 
             user.FirstName = userParam.FirstName;
             user.LastName = userParam.LastName;
-            user.Username = userParam.Username;
+            user.UserName = userParam.UserName;
 
             if (!string.IsNullOrWhiteSpace(password))
             {
-                byte[] passwordHash, passwordSalt;
-                CreatePasswordHash(password, out passwordHash, out passwordSalt);
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
+                await _userManager.RemovePasswordAsync(user);
+                await _userManager.AddPasswordAsync(user, password);
             }
-
-            _context.Users.Update(user);
-            _context.SaveChanges();
-        }
-
-        // private helper methods
-
-        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            if (password == null) throw new ArgumentNullException("password");
-            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");
-
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
-        {
-            if (password == null) throw new ArgumentNullException("password");
-            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");
-            if (storedHash.Length != 64) throw new ArgumentException("Invalid length of password hash (64 bytes expected).", "passwordHash");
-            if (storedSalt.Length != 128) throw new ArgumentException("Invalid length of password salt (128 bytes expected).", "passwordSalt");
-
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                for (int i = 0; i < computedHash.Length; i++)
-                {
-                    if (computedHash[i] != storedHash[i]) return false;
-                }
-            }
-
-            return true;
+            await _userManager.UpdateAsync(user);
         }
     }
 }

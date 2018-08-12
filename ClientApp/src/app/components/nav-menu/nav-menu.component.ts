@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 
@@ -7,16 +7,38 @@ import { Router } from '@angular/router';
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.css']
 })
-export class NavMenuComponent {
+export class NavMenuComponent implements OnInit {
 
-  constructor(private router: Router, private authService: AuthService) { }
+  profilePicUrl: string;
+  firstName: string;
+  lastName: string;
+
+  constructor(private router: Router, private authService: AuthService) {
+    this.profilePicUrl = authService.ProfilePicture;
+    this.firstName = authService.FirstName;
+  }
+
+  ngOnInit() {
+    if (this.authService.isLogged()) { 
+      this.authService.getUserInfo();
+      this.profilePicUrl = this.authService.ProfilePicture;
+      this.firstName = this.authService.FirstName;
+      this.lastName = this.authService.LastName;
+    }
+  }
 
   public logout() {
     this.authService.logout();
   }
 
   public isLogged(): boolean {
-    return this.authService.isLogged();
+    if (this.authService.isLogged()) {
+      this.profilePicUrl = this.authService.ProfilePicture;
+      this.firstName = this.authService.FirstName;
+      this.lastName = this.authService.LastName;
+      return true;
+    }
+    return false;
   }
 
 }
