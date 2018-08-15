@@ -59,13 +59,10 @@ namespace website.Controllers
 
             return Ok(new
             {
-                User = new
-                {
-                    Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    ProfilePictureUrl = user.ProfilePicture != null ? user.ProfilePicture.Url : "/images/default_avatar.png"
-                },
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                ProfilePictureUrl = user.ProfilePicture != null ? user.ProfilePicture.Url : "/images/default_avatar.png",
                 Token = tokenString
             });
 
@@ -74,8 +71,14 @@ namespace website.Controllers
         [HttpGet("user")]
         public async Task<IActionResult> GetUserInfo()
         {
-            User user = await _userManager.GetUserAsync(HttpContext.User);
-            return Ok(user);
+            User user = await _userService.GetById(User.Identity.Name);
+            return Ok(new
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                ProfilePictureUrl = user.ProfilePicture != null ? user.ProfilePicture.Url : "/images/default_avatar.png"
+            });
         }
         
     }

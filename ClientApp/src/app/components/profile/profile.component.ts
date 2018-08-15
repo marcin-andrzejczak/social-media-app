@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
+import { Observable } from 'rxjs';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-profile',
@@ -12,7 +14,7 @@ import { AuthService } from '../../services/auth.service';
 export class ProfileComponent implements OnInit, OnDestroy {
   
   private sub: any;
-  private user: any;
+  private UserObservable: Observable<User>;
 
   constructor(private http: HttpClient,
               private router: Router,
@@ -22,17 +24,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
-      if (params['id'] != '') {
-        this.userService.get(params['id']).subscribe(result => {
-          this.user = result;
-        });
+      if (params['id']) {
+        this.UserObservable = this.userService.get(params['id']);
+        console.log("Profile obtained with parameter id=" + params['id']);
       } else {
-        this.userService.get(this.authService.User.Id).subscribe(result => {
-          this.user = result;
-        });;
+        this.UserObservable = this.userService.get(this.authService.User.Id);
+        console.log("Profile obtained for current user with id=" + this.authService.User.Id);
+        debugger;
       }
     });
-    console.log(this.user);
+    console.log(this.UserObservable);
   }
 
   ngOnDestroy() {

@@ -9,23 +9,27 @@ import { User } from '../../models/user.model';
   styleUrls: ['./nav-menu.component.css']
 })
 export class NavMenuComponent implements OnInit {
-
-  User: User;
-  isLogged: boolean;
-
+  
   constructor(private router: Router, private authService: AuthService) {
-    this.User = authService.User;
   }
 
   ngOnInit() {
-    this.isLogged = this.authService.isLogged();
-    if (this.isLogged) {
-      this.User = this.authService.User;
-    }
   }
 
   public logout() {
     this.authService.logout();
+  }
+
+  public isLogged(): boolean {
+    return this.authService.isLogged();
+  }
+
+  public getFullName(): string{
+    return this.authService.getCurrentUserFullName();
+  }
+
+  public getProfilePictureUrl(): string {
+    return this.authService.getCurrentUserProfilePictureUrl();
   }
 
 }

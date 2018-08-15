@@ -1,3 +1,14 @@
-<img src="{{user.ProfilePicture}}"/>
-<b>{{user.FirstName}} {{user.LastName}}</b>
-
+<mat-card>
+  <div *ngIf="UserObservable | async as user; else loading">
+    <mat-card-header>
+      <mat-card-title>{{user.FirstName}} {{user.LastName}}</mat-card-title>
+    </mat-card-header>
+    <img mat-card-image src="{{user.ProfilePictureUrl}}" alt="{{user.FirstName}} {{user.LastName}} profile picture">
+    <mat-card-content>
+      <p>
+        Some description
+      </p>
+    </mat-card-content>
+  </div>
+  <ng-template #loading>Loading User Data...</ng-template>
+</mat-card>
