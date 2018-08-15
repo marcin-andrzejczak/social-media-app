@@ -59,10 +59,13 @@ namespace website.Controllers
 
             return Ok(new
             {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                ProfilePicture = user.ProfilePicture != null ? user.ProfilePicture.Url : "/images/default_avatar.png" ,
+                User = new
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    ProfilePictureUrl = user.ProfilePicture != null ? user.ProfilePicture.Url : "/images/default_avatar.png"
+                },
                 Token = tokenString
             });
 

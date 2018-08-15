@@ -27,7 +27,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.user = result;
         });
       } else {
-        this.userService.get(this.authService.Id).subscribe(result => {
+        this.userService.get(this.authService.User.Id).subscribe(result => {
           this.user = result;
         });;
       }

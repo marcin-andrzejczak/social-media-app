@@ -2,17 +2,19 @@
   <mat-toolbar-row>
     <button mat-raised-button routerLink="/">Social WebApp</button>
     <span>
-      <span [hidden]="isLogged()">
+      <span *ngIf="!isLogged; else loggedBlock">
         <button mat-raised-button routerLink="/login">Login</button>
         <button mat-raised-button routerLink="/register">Register</button>
       </span>
-      <span [hidden]="!isLogged()">
-        <button mat-raised-button routerLink="/profile">
-          <img class="profile-picture-icon" src="{{profilePicUrl}}"/>
-          {{firstName}} {{lastName}}
-        </button>
-        <button mat-raised-button (click)="logout()">Logout</button>
-      </span>
+      <ng-template #loggedBlock>
+        <span *ngIf="User | async as user">
+          <button mat-raised-button routerLink="/profile">
+            <img class="profile-picture-icon" src="{{user.ProfilePicUrl}}" />
+            {{user.FirstName}} {{user.LastName}}
+          </button>
+          <button mat-raised-button (click)="logout()">Logout</button>
+        </span>
+      </ng-template>
     </span>
   </mat-toolbar-row>
 </mat-toolbar>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-nav-menu',
@@ -9,36 +10,22 @@ import { Router } from '@angular/router';
 })
 export class NavMenuComponent implements OnInit {
 
-  profilePicUrl: string;
-  firstName: string;
-  lastName: string;
+  User: User;
+  isLogged: boolean;
 
   constructor(private router: Router, private authService: AuthService) {
-    this.profilePicUrl = authService.ProfilePicture;
-    this.firstName = authService.FirstName;
+    this.User = authService.User;
   }
 
   ngOnInit() {
-    if (this.authService.isLogged()) { 
-      this.authService.getUserInfo();
-      this.profilePicUrl = this.authService.ProfilePicture;
-      this.firstName = this.authService.FirstName;
-      this.lastName = this.authService.LastName;
+    this.isLogged = this.authService.isLogged();
+    if (this.isLogged) {
+      this.User = this.authService.User;
     }
   }
 
   public logout() {
     this.authService.logout();
-  }
-
-  public isLogged(): boolean {
-    if (this.authService.isLogged()) {
-      this.profilePicUrl = this.authService.ProfilePicture;
-      this.firstName = this.authService.FirstName;
-      this.lastName = this.authService.LastName;
-      return true;
-    }
-    return false;
   }
 
 }
