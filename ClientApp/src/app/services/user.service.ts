@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { RegisterForm } from '../DTOs/register-form';
@@ -30,5 +30,9 @@ export class UserService {
 
   remove(id: string) {
     this.http.delete(this.baseUrl + 'api/users/' + id);
+  }
+
+  private errorHandler(error: HttpErrorResponse) {
+
   }
 }

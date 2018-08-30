@@ -14,7 +14,7 @@ import { User } from '../../models/user.model';
 export class ProfileComponent implements OnInit, OnDestroy {
   
   private sub: any;
-  private UserObservable: Observable<User>;
+  user$: Observable<User>;
 
   constructor(private http: HttpClient,
               private router: Router,
@@ -25,15 +25,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
       if (params['id']) {
-        this.UserObservable = this.userService.get(params['id']);
+        this.user$ = this.userService.get(params['id']);
         console.log("Profile obtained with parameter id=" + params['id']);
-      } else {
-        this.UserObservable = this.userService.get(this.authService.User.Id);
+      } else if (this.authService.User) {
+        this.user$ = this.userService.get(this.authService.User.Id);
         console.log("Profile obtained for current user with id=" + this.authService.User.Id);
-        debugger;
+      } else {
+        this.router.navigate(['/']);
       }
     });
-    console.log(this.UserObservable);
   }
 
   ngOnDestroy() {

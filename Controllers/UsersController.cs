@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using website.DTOs;
 using website.Exceptions;
 using website.Helpers;
 using website.Models;
 using website.Services;
+using Website.DTOs;
 
 namespace website.Controllers
 {
@@ -40,12 +34,12 @@ namespace website.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] UserDto userDto)
+        public async Task<IActionResult> Register([FromBody] RegisterFormDto registerFormDto)
         {
-            var user = _mapper.Map<User>(userDto);
+            var user = _mapper.Map<User>(registerFormDto);
             try
             {
-                await _userService.Create(user, userDto.Password);
+                await _userService.Create(user, registerFormDto.Password);
                 return Ok();
             } catch (AppException ex)
             {
@@ -65,19 +59,19 @@ namespace website.Controllers
         public async Task<IActionResult> GetById(string id)
         {
             var user = await _userService.GetById(id);
-            var userDto = _mapper.Map<UserDto>(user);
+            var userDto = _mapper.Map<User, UserDto>(user);
             return Ok(userDto);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(string id, [FromBody] UserDto userDto)
+        public IActionResult Update(string id, [FromBody] LoginFormDto loginFormDto)
         {
-            var user = _mapper.Map<User>(userDto);
+            var user = _mapper.Map<User>(loginFormDto);
             user.Id = id;
 
             try
             {
-                _userService.Update(user, userDto.Password);
+                _userService.Update(user, loginFormDto.Password);
                 return Ok();
             } catch (AppException ex)
             {

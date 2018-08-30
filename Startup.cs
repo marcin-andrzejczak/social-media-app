@@ -15,6 +15,8 @@ using website.Services;
 using AutoMapper;
 using website.Models;
 using Microsoft.AspNetCore.Identity;
+using website.DTOs;
+using Website.Helpers.Resolvers;
 
 namespace website
 {
@@ -32,7 +34,10 @@ namespace website
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             //services.AddDbContext<DataContext>(x => x.UseMySql(Configuration.GetConnectionString("MySqlConnection")));
-            services.AddAutoMapper();
+            services.AddAutoMapper(cfg =>
+                cfg.CreateMap<User, UserDto>()
+                    .ForMember(dest => dest.ProfilePictureUrl, opt => opt.ResolveUsing<ProfilePictureUrlResolver>()));
+
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<User, IdentityRole>()

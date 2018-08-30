@@ -20,7 +20,6 @@ namespace website.Helpers
         {
             base.OnModelCreating(modelBuilder);
 
-
             modelBuilder.Entity<User>().HasOne(u => u.ProfilePicture);
             modelBuilder.Entity<User>().HasMany(u => u.Medias).WithOne(m => m.User);
             modelBuilder.Entity<User>().HasMany(u => u.Posts).WithOne(p => p.User);

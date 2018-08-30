@@ -1,9 +1,9 @@
 <mat-card>
-  <div *ngIf="UserObservable | async as user; else loading">
+  <div *ngIf="user$ | async as user; else loading">
     <mat-card-header>
-      <mat-card-title>{{user.FirstName}} {{user.LastName}}</mat-card-title>
+      <mat-card-title>{{user.firstName}} {{user.lastName}}</mat-card-title>
     </mat-card-header>
-    <img mat-card-image src="{{user.ProfilePictureUrl}}" alt="{{user.FirstName}} {{user.LastName}} profile picture">
+    <img mat-card-image src="{{user.profilePictureUrl}}" alt="{{user.firstName}} {{user.lastName}} profile picture">
     <mat-card-content>
       <p>
         Some description
